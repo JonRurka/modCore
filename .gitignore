@@ -1,0 +1,6 @@
+# Git Ignore
+
+*.exe
+.DS_Store
+
+/bin
