@@ -9,7 +9,9 @@ namespace modCore
     public class Monitor : MonoBehaviour
     {
         public ModCore modCore;
+        public bool open = false;
 
+        Console console;
         GameObject player;
         private ICollection<IPlugin> plugins;
         private List<string> _Text;
@@ -18,7 +20,6 @@ namespace modCore
         private string input = string.Empty;
         private float bottom;
         private float xOffset;
-        private bool open = false;
         private bool Opening = false;
 
         void Awake()
@@ -85,6 +86,15 @@ namespace modCore
 
         void OnLevelWasLoaded(int level)
         {
+            if (level == 2)
+            {
+                GameObject consoleObj = GameObject.Find("Notifications");
+                if (consoleObj != null)
+                {
+                    console = consoleObj.GetComponent<Console>();
+                    modCore.console = console;
+                }
+            }
             modCore.Log("\"" + Application.loadedLevelName  + "\" (" + level + ") was loaded.");
         }
 

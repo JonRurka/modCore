@@ -13,7 +13,9 @@ namespace modCore
     {
         #region variables
         public Monitor monitorComp;
-        public Dictionary<string, Mesh> importedMeshes = new Dictionary<string, Mesh>();
+        public Console console;
+
+        Dictionary<string, Mesh> importedMeshes = new Dictionary<string, Mesh>();
         string path = string.Empty;
         ICollection<IPlugin> plugins;
         Dictionary<string, IPlugin> name_plugin;
@@ -26,6 +28,20 @@ namespace modCore
         public ICollection<IPlugin> Plugins
         {
             get { return plugins; }
+        }
+        public bool ConsoleOpen
+        {
+            get 
+            {
+                if (console != null)
+                {
+                    return console.m_userInput.IsSubmitting;
+                }
+                else
+                {
+                    return monitorComp.open;
+                }
+            }
         }
         #endregion
 
@@ -284,15 +300,22 @@ namespace modCore
                         // send to other mods for processing.
                         #region default
                         bool received = false;
-                        if (plugins != null)
+                        if (allCommands.ContainsKey(args[0].Replace("/","")))
                         {
-                            foreach (IPlugin plugin in plugins)
+                            if (plugins != null)
                             {
-                                received = (plugin.Submit(message) || received);
+                                foreach (IPlugin plugin in plugins)
+                                {
+                                    if (plugin != null)
+                                    {
+                                        plugin.Submit(message);
+                                    }
+                                }
                             }
+                            else
+                                PrintError("plugins list is null.");
                         }
-
-                        if (!received)
+                        else
                             PrintError("Command \"" + args[0] + "\" doesn't exist.");
                         break;
                         #endregion
@@ -366,6 +389,16 @@ namespace modCore
         {
             if (name_plugin.ContainsKey(name))
                 return name_plugin[name];
+            else
+                return null;
+        }
+
+        public Mesh GetMesh(string name)
+        {
+            if (importedMeshes.ContainsKey(name))
+            {
+                return importedMeshes[name];
+            }
             else
                 return null;
         }
