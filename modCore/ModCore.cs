@@ -13,11 +13,13 @@ namespace modCore
     {
         #region variables
         public Monitor monitorComp;
+        public Dictionary<string, Mesh> importedMeshes = new Dictionary<string, Mesh>();
         string path = string.Empty;
         ICollection<IPlugin> plugins;
         Dictionary<string, IPlugin> name_plugin;
         Dictionary<string, CommandDescription[]> plugin_Commands;
         Dictionary<string, CommandDescription> allCommands;
+        string modelFolder;
         #endregion
 
         #region properties
@@ -32,6 +34,7 @@ namespace modCore
         public ModCore()
         {
             Console.modCore = this;
+            ObjImporter.modCore = this;
             GameObject monitor = new GameObject("monitor");
             monitorComp = monitor.AddComponent<Monitor>();
             monitorComp.modCore = this;
@@ -41,6 +44,7 @@ namespace modCore
             plugin_Commands = new Dictionary<string, CommandDescription[]>();
             StartPlugins();
             AddModCoreCommands();
+            SearchForModels();
         }
         #endregion
         
@@ -128,6 +132,35 @@ namespace modCore
             {
                 LogError(e);
                 LogError("Failed to load mods.");
+            }
+        }
+
+        public void SearchForModels()
+        {
+            modelFolder = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\models\\";
+            if (!Directory.Exists(modelFolder))
+            {
+                Log("Creating model folder.");
+                Directory.CreateDirectory(modelFolder);
+                return;
+            }
+
+            Log("scanning for models...");
+            string[] paths = Directory.GetFiles(modelFolder);
+            Log("Found " + paths.Length + " models.");
+            foreach (string modelPath in paths)
+            {
+                Mesh mesh = ObjImporter.ImportFile(modelPath);
+                if (mesh != null)
+                {
+                    importedMeshes.Add(mesh.name, mesh);
+                }
+                else
+                {
+                    string[] brokenString = modelPath.Split('\\');
+                    string modelFileName = brokenString[brokenString.Length - 1];
+                    PrintError("Failed to load " + modelFileName);
+                }
             }
         }
 

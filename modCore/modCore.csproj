@@ -46,6 +46,7 @@
     <Compile Include="CommandDescription.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="ModCore.cs" />
+    <Compile Include="ObjImporter .cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -19,6 +19,7 @@ namespace modCore
         private float bottom;
         private float xOffset;
         private bool open = false;
+        private bool Opening = false;
 
         void Awake()
         {
@@ -36,7 +37,11 @@ namespace modCore
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.BackQuote))
+            {
                 open = !open;
+                if (open)
+                    Opening = true;
+            }
         }
 
         void OnGUI()
@@ -54,14 +59,23 @@ namespace modCore
                 if (Application.loadedLevel == 1)
                 {
                     GUI.Box(new Rect(5, 5, 1010, Screen.height - 10), "");
+                    GUI.SetNextControlName("inputBox");
                     input = GUI.TextField(new Rect(10, bottom, 1000, 20), input);
                     if (Event.current.keyCode == KeyCode.Return && !input.Equals(string.Empty))
                     {
                         submit(input);
                         input = string.Empty;
                     }
+
+                    if (Event.current.keyCode == KeyCode.BackQuote && Opening)
+                    {
+                        GUI.FocusControl("inputBox");
+                        if (input.Trim().Equals("`"))
+                            input = string.Empty;
+                        Opening = false;
+                    }
                 }
-                
+
                 for (int i = 0; i < _reverseText.Count; i++)
                 {
                     GUI.Label(new Rect(xOffset, (bottom - 20) - (i * 20), 1000, 20), _reverseText[i]);
