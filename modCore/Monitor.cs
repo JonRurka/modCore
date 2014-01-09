@@ -9,6 +9,7 @@ namespace modCore
     public class Monitor : MonoBehaviour
     {
         public ModCore modCore;
+        public ModApi modApi;
         public bool open = false;
 
         Console console;
@@ -93,6 +94,7 @@ namespace modCore
                 {
                     console = consoleObj.GetComponent<Console>();
                     modCore.console = console;
+                    modApi.console = console;
                 }
             }
             modCore.Log("\"" + Application.loadedLevelName  + "\" (" + level + ") was loaded.");

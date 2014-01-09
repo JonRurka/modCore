@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>.\Assembly-CSharp.dll</HintPath>
@@ -45,7 +48,9 @@
   <ItemGroup>
     <Compile Include="CommandDescription.cs" />
     <Compile Include="Interface.cs" />
+    <Compile Include="ModApi.cs" />
     <Compile Include="ModCore.cs" />
+    <Compile Include="ModCoreModificationHandler.cs" />
     <Compile Include="ObjImporter .cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

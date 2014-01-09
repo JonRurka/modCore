@@ -15,32 +15,38 @@ namespace modCore
         public Monitor monitorComp;
         public Console console;
 
-        Dictionary<string, Mesh> importedMeshes = new Dictionary<string, Mesh>();
+        ModApi modApi;
         string path = string.Empty;
         ICollection<IPlugin> plugins;
         Dictionary<string, IPlugin> name_plugin;
         Dictionary<string, CommandDescription[]> plugin_Commands;
         Dictionary<string, CommandDescription> allCommands;
-        string modelFolder;
+        
         #endregion
 
         #region properties
+        /// <summary>
+        /// Returns a list of all plugins.
+        /// </summary>
         public ICollection<IPlugin> Plugins
         {
             get { return plugins; }
         }
+
+        /// <summary>
+        /// Returns a reference to the mod API.
+        /// </summary>
+        public ModApi API
+        {
+            get { return modApi; }
+        }
+
+        [Obsolete("Please use ModApi.ConsoleOpen instead.", false)]
         public bool ConsoleOpen
         {
             get 
             {
-                if (console != null)
-                {
-                    return console.m_userInput.IsSubmitting;
-                }
-                else
-                {
-                    return monitorComp.open;
-                }
+                return modApi.ConsoleOpen;
             }
         }
         #endregion
@@ -54,13 +60,11 @@ namespace modCore
             GameObject monitor = new GameObject("monitor");
             monitorComp = monitor.AddComponent<Monitor>();
             monitorComp.modCore = this;
+            modApi = new ModApi(this);
+            monitorComp.modApi = modApi;
             Log("started.");
-            allCommands = new Dictionary<string, CommandDescription>();
-            name_plugin = new Dictionary<string, IPlugin>();
-            plugin_Commands = new Dictionary<string, CommandDescription[]>();
             StartPlugins();
             AddModCoreCommands();
-            SearchForModels();
         }
         #endregion
         
@@ -70,6 +74,10 @@ namespace modCore
         {
             try
             {
+                name_plugin = new Dictionary<string, IPlugin>();
+                allCommands = new Dictionary<string, CommandDescription>();
+                plugin_Commands = new Dictionary<string, CommandDescription[]>();
+
                 // search for dll files
                 Log("searching for dll files");
                 path = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\";
@@ -148,35 +156,6 @@ namespace modCore
             {
                 LogError(e);
                 LogError("Failed to load mods.");
-            }
-        }
-
-        public void SearchForModels()
-        {
-            modelFolder = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\models\\";
-            if (!Directory.Exists(modelFolder))
-            {
-                Log("Creating model folder.");
-                Directory.CreateDirectory(modelFolder);
-                return;
-            }
-
-            Log("scanning for models...");
-            string[] paths = Directory.GetFiles(modelFolder);
-            Log("Found " + paths.Length + " models.");
-            foreach (string modelPath in paths)
-            {
-                Mesh mesh = ObjImporter.ImportFile(modelPath);
-                if (mesh != null)
-                {
-                    importedMeshes.Add(mesh.name, mesh);
-                }
-                else
-                {
-                    string[] brokenString = modelPath.Split('\\');
-                    string modelFileName = brokenString[brokenString.Length - 1];
-                    PrintError("Failed to load " + modelFileName);
-                }
             }
         }
 
@@ -393,14 +372,10 @@ namespace modCore
                 return null;
         }
 
+        [Obsolete("Please use ModApi.GetMesh instead.", false)]
         public Mesh GetMesh(string name)
         {
-            if (importedMeshes.ContainsKey(name))
-            {
-                return importedMeshes[name];
-            }
-            else
-                return null;
+            return ModApi.GetMesh(name);
         }
 
         private void AddModCoreCommands()
