@@ -34,6 +34,14 @@ namespace modCore
         }
 
         /// <summary>
+        /// Returns the current version of modCore.
+        /// </summary>
+        public string Version
+        {
+            get { return "ModCore version 1.2-beta"; }
+        }
+
+        /// <summary>
         /// Returns a reference to the mod API.
         /// </summary>
         public ModApi API
@@ -95,16 +103,13 @@ namespace modCore
 
                 // load assemblies
                 Log("Loading assemblies.");
-                string files = "dll files: \n";
                 ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
                 foreach (string dllFile in dllFileNames)
                 {
-                    files += dllFile + "\n";
                     AssemblyName an = AssemblyName.GetAssemblyName(dllFile);
                     Assembly assembly = Assembly.Load(an);
                     assemblies.Add(assembly);
                 }
-                Log(files);
 
                 if (assemblies.Count > 0)
                 {
@@ -275,6 +280,10 @@ namespace modCore
                         break;
                         #endregion
 
+                    case "/version":
+                        Print(Version);
+                        break;
+
                     default:
                         // send to other mods for processing.
                         #region default
@@ -343,25 +352,40 @@ namespace modCore
         public void Print(object message)
         {
             if (Application.loadedLevel == 2)
+            {
                 Console.AddMessage(message.ToString());
-            else
                 monitorComp.Log(message.ToString());
+            }
+            else
+            {
+                monitorComp.Log(message.ToString());
+            }
         }
 
         public void PrintWarning(object message)
         {
             if (Application.loadedLevel == 2)
+            {
                 Console.AddWarning("Warning: " + message.ToString());
-            else
                 monitorComp.Log("Warning: " + message.ToString());
+            }
+            else
+            {
+                monitorComp.Log("Warning: " + message.ToString());
+            }
         }
 
         public void PrintError(object message)
         {
             if (Application.loadedLevel == 2)
+            {
                 Console.AddError("Error: " + message.ToString());
-            else
                 monitorComp.Log("Error: " + message.ToString());
+            }
+            else
+            {
+                monitorComp.Log("Error: " + message.ToString());
+            }
         }
 
         public IPlugin GetPlugin(string name)
@@ -384,6 +408,7 @@ namespace modCore
             modCoreCommands.Add(new CommandDescription("exit", string.Empty, "exits the game"));
             modCoreCommands.Add(new CommandDescription("help", "[-p]|[command] [pluginName]", "displays this prompt", "Displays the help prompt. Use the name of a plugin as the third argument if '-p' was used as the second to get a list of every command for that plugin or enter in a command name for the second argument to get a detailed description of the command. notice: you do not need to place a '/' in front of the command name for the second argument"));
             modCoreCommands.Add(new CommandDescription("plugins", string.Empty, "lists installed plugins"));
+            modCoreCommands.Add(new CommandDescription("version", string.Empty, "Prints the current version of modCore."));
             AddCommands("modCore", modCoreCommands);
         }
         #endregion

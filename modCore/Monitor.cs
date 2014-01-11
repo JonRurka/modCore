@@ -102,6 +102,7 @@ namespace modCore
 
         public void submit(string _input)
         {
+
             modCore.submit(_input, false);
         }
 
@@ -113,9 +114,13 @@ namespace modCore
 
         public void print(string _input)
         {
-            _Text.Add(_input);
-            _reverseText = new List<string>(_Text);
-            _reverseText.Reverse();
+            string[] lines = _input.Split('\n');
+            foreach (string line in lines)
+            {
+                _Text.Add(line);
+                _reverseText = new List<string>(_Text);
+                _reverseText.Reverse();
+            }
         }
 
         public string getTime()
