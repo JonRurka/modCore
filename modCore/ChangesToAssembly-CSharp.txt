@@ -1,6 +1,3 @@
-*Add ModCore feild to User and Console classes.
-*In User constructor, add "modCore = new ModCore()"
-*In console class, add code to UpdateSubmission() to call Submit function in modcore.
-*Make password feild in User private.
-*make Method17 and Method18 in CodeHatch.AI.DynamicSpawner public.
+*In User static constructor, add "ModCore.Init()"
+*Make m_userInput feild in Console public.
 *Make all methods in SimpleModificationHandler public (method3 not required).
