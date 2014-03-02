@@ -1,5 +1,32 @@
 Changes log:
 
+1.2.0-beta:
+  -Main Features:
+     *Added "ModApi" class as a wrapper for the starforge code.
+     *Apped functionality to edit terrain.
+     
+  -Improvements:
+     *Print methods now always print to the log.
+     *ModCore Console now prints multiple line entries, as opposed to only printing the first line.
+     
+  -Commands:
+     *Added command to print modCore version.
+     
+  -API changes:
+     *Moved model import code to ModApi class.
+     *GetMesh method and ConsoleOpen property in modCore have been made Obsolete. It is now recommended to to ModApi version of those functions.
+     *Added "GetNetworkPlayer" function to ModApi - Multiplayer safe function to get a reference to your player.
+     *Added "SearchForModels" to ModApi - Scans the models directly for models.
+     *Added "RemoveTerrain to ModApi - Removes a peice of terrain at the specified position.
+     *Added "AddTerrain" to ModApi - Supposed to add terrain at specified position.
+     *Added "RemoveLinearTerrain" to modApi - Removes terrain in a line that starts at "starPosition", and ends at "endPosition".
+     *Added "AddLinearTerrain" to modApi = Adds Terrain in a line that starts at "starPosition", and ends at "endPosition".
+     
+  -Know bugs:
+     *Add terrain functions do not work.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+     
 1.1.0-beta:
   -Main Featurs:
      *Added functionality to import your own meshes into the game from .Obj files. 
@@ -12,5 +39,7 @@ Changes log:
      *Added ConsoleOpen property that returns true if the modCore console or in game chat is open.
      *Added GetMesh(string) function to retrieve meshes (in string is the name of the mesh file minus the extension). 
 
+-------------------------------------------------------------------------------------------------------------------------------------------------
+     
 1.0.0-beta
      *Initial release.

@@ -33,21 +33,22 @@ namespace modCore
 
         void Start()
         {
-            modCore.Log("in-game console started.");
+            //ModCore.Log("in-game console started.");
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.BackQuote))
+            /*if (Input.GetKeyDown(KeyCode.BackQuote))
             {
                 open = !open;
                 if (open)
                     Opening = true;
-            }
+            }*/
         }
 
         void OnGUI()
         {
+            /*
             bottom = Screen.height * 19 / 20;
             if (Application.loadedLevel == 1)
             {
@@ -82,7 +83,7 @@ namespace modCore
                 {
                     GUI.Label(new Rect(xOffset, (bottom - 20) - (i * 20), 1000, 20), _reverseText[i]);
                 }
-            }
+            }*/
         }
 
         void OnLevelWasLoaded(int level)
@@ -97,13 +98,13 @@ namespace modCore
                     modApi.console = console;
                 }
             }
-            modCore.Log("\"" + Application.loadedLevelName  + "\" (" + level + ") was loaded.");
+            ModCore.Log("\"" + Application.loadedLevelName  + "\" (" + level + ") was loaded.");
         }
 
         public void submit(string _input)
         {
 
-            modCore.submit(_input, false);
+            //modCore.submit(_input, false);
         }
 
         public void Log(string _input)

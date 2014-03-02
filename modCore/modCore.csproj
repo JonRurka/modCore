@@ -22,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,7 +37,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -49,8 +52,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandDescription.cs" />
+    <Compile Include="Alias.cs" />
+    <Compile Include="AsyncRunner.cs" />
+    <Compile Include="CoreConsole.cs" />
+    <Compile Include="ConsoleWpr.cs" />
     <Compile Include="Interface.cs" />
+    <Compile Include="Loom.cs" />
     <Compile Include="ModApi.cs" />
     <Compile Include="ModCore.cs" />
     <Compile Include="ModCoreModificationHandler.cs" />

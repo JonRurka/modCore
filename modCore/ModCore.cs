@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using CodeHatch;
 using CodeHatch.AI;
 using CodeHatch.Common;
+using CodeHatch.Networking.Events;
+using CodeHatch.Networking.Events.Player;
 using UnityEngine;
 
 namespace modCore
@@ -14,13 +17,14 @@ namespace modCore
         #region variables
         public Monitor monitorComp;
         public Console console;
+        public static ModCore modCore;
+        public static Dictionary<string, List<CoreConsole.CommandDescription>> plugin_Commands;
 
         ModApi modApi;
         string path = string.Empty;
-        ICollection<IPlugin> plugins;
+        static string modFolder = string.Empty;
+        static ICollection<IPlugin> plugins;
         Dictionary<string, IPlugin> name_plugin;
-        Dictionary<string, CommandDescription[]> plugin_Commands;
-        Dictionary<string, CommandDescription> allCommands;
         
         #endregion
 
@@ -49,13 +53,12 @@ namespace modCore
             get { return modApi; }
         }
 
-        [Obsolete("Please use ModApi.ConsoleOpen instead.", false)]
-        public bool ConsoleOpen
+        /// <summary>
+        /// The folder config files and models are put into.
+        /// </summary>
+        public static string ModFolder
         {
-            get 
-            {
-                return modApi.ConsoleOpen;
-            }
+            get { return modFolder; }
         }
         #endregion
 
@@ -63,32 +66,46 @@ namespace modCore
         #region constructors
         public ModCore()
         {
-            Console.modCore = this;
+            //Console.modCore = this;
             ObjImporter.modCore = this;
+            modFolder = Environment.CurrentDirectory + "\\StarForge_Data\\mods\\";
             GameObject monitor = new GameObject("monitor");
             monitorComp = monitor.AddComponent<Monitor>();
+            monitor.AddComponent<CoreConsole>();
             monitorComp.modCore = this;
             modApi = new ModApi(this);
             monitorComp.modApi = modApi;
             Log("started.");
             StartPlugins();
+            EventManager.Subscribe(typeof(PlayerCommandEvent), new EventSubscription.EventSubscriber(SubmitCommand));
+            EventManager.Subscribe(typeof(PlayerMessageEvent), new EventSubscription.EventSubscriber(SubmitMessage));
             AddModCoreCommands();
+            Alias.Load();
         }
         #endregion
         
 
         #region methods
+        public static void Init() {
+            if (modCore == null) {
+                modCore = new ModCore();
+            }
+            else
+                LogError("Only one modCore instance allowed.");
+        }
+
         public void StartPlugins()
         {
             try
             {
                 name_plugin = new Dictionary<string, IPlugin>();
-                allCommands = new Dictionary<string, CommandDescription>();
-                plugin_Commands = new Dictionary<string, CommandDescription[]>();
+                //allCommands = new Dictionary<string, CommandDescription>();
+                plugin_Commands = new Dictionary<string, List<CoreConsole.CommandDescription>>();
 
                 // search for dll files
                 Log("searching for dll files");
-                path = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\";
+                //path = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\";
+                path = modFolder + "\\plugins\\";
 
                 string[] dllFileNames = null;
                 if (Directory.Exists(path))
@@ -164,28 +181,93 @@ namespace modCore
             }
         }
 
-        public void AddCommands(string pluginName, List<CommandDescription> newCommands)
+        public void SubmitCommand(IEvent baseEvent)
         {
-            foreach (CommandDescription cmd in newCommands)
-            {
-                allCommands.Add(cmd.command, cmd);
-            }
-            plugin_Commands.Add(pluginName.ToLower(), newCommands.ToArray());
-        }
+            PlayerCommandEvent theEvent = (PlayerCommandEvent)baseEvent;
+            string message = theEvent.Command;
 
-        public void submit(string message, bool networked)
-        {
             if (message.StartsWith("/"))
             {
-                string[] args = message.Split(' ');
+                CoreConsole.Execute(message.Remove(0, 1));
+                #region old
+                //string[] args = message.Split(' ');
+                /*string inputCommand = string.Empty;
+                string commandFromAliase = Alias.GetCommand(args[0].Replace("/", ""));
 
-                switch (args[0].ToLower())
+                if (!commandFromAliase.Equals(string.Empty))
+                    inputCommand = "/" + commandFromAliase;
+                else
+                    inputCommand = args[0];
+
+                switch (inputCommand.ToLower())
                 {
                     case "/cheat":
                     case "/say":
                     case "/me":
-                    case "/suicide ":
+                    case "/suicide":
                         break;
+
+                    case "/alias":
+                        #region alias
+                        if (args.Length > 1)
+                        {
+                            switch (args[1].ToLower())
+                            {
+                                case "-add":
+                                    if (args.Length == 4)
+                                    {
+                                        Alias.AddAlias(args[2], args[3]);
+                                        Alias.Save();
+                                    }
+                                    else
+                                        PrintError("Invalid number of arguments. Got " + args.Length + ", expected 4.");
+                                    break;
+
+                                case "-remove":
+                                    if (args.Length == 3)
+                                    {
+                                        Alias.RemoveAlias(args[2]);
+                                        Alias.Save();
+                                    }
+                                    else
+                                        PrintError("Invalid number of arguments, Got " + args.Length + ", expected 3.");
+                                    break;
+
+                                case "-list":
+                                    Dictionary<string, string> aliases = Alias.Aliases;
+                                    Print("");
+                                    Print("Available aliases (<alias>, <command>): ");
+                                    foreach (string alias in aliases.Keys)
+                                    {
+                                        Print("-- " + alias + ", " + aliases[alias]);
+                                    }
+                                    Print("");
+                                    break;
+
+                                case "-reload":
+                                    Alias.Load();
+                                    break;
+
+                                case "-h":
+                                    Print("");
+                                    Print("Available actions: ");
+                                    Print("-add <alias> <command> : adds an alias for command.");
+                                    Print("-remove <alias> : Removes the alias.");
+                                    Print("-list : lists all aliases.");
+                                    Print("-reload : Loads the alias list from the file.");
+                                    Print("-h : Shows this prompt.");
+                                    Print("");
+                                    break;
+
+                                default:
+                                    PrintError("Unknown action \"" + args[1] + "\".");
+                                    break;
+                            }
+                        }
+                        else
+                            PrintError("Invalid number of arguments.");
+                        break;
+                        #endregion
 
                     case "/exit":
                         Application.Quit();
@@ -284,6 +366,14 @@ namespace modCore
                         Print(Version);
                         break;
 
+                    case "/reload":
+                        #region reload
+                        StartPlugins();
+                        Alias.Load();
+                        Print("Plugins reloaded successfully.");
+                        break;
+                        #endregion
+
                     default:
                         // send to other mods for processing.
                         #region default
@@ -307,85 +397,101 @@ namespace modCore
                             PrintError("Command \"" + args[0] + "\" doesn't exist.");
                         break;
                         #endregion
-                }
+                }*/
+                #endregion
             }
             else if (plugins != null)
             {
-                foreach (IPlugin plugin in plugins)
-                {
-                    if (plugin != null)
-                        plugin.Submit(message);
-                }
+
             }
         }
 
-        public void Log(object message)
+        public void SubmitMessage(IEvent baseEvent) {
+            PlayerMessageEvent theEvent = (PlayerMessageEvent)baseEvent;
+            string message = theEvent.Message;
+
+            foreach (IPlugin plugin in plugins) {
+                if (plugin != null)
+                    plugin.Submit(message);
+            }
+        }
+
+        public static void Log(object message)
         {
             Debug.Log("modCore.dll: " + message.ToString());
-            monitorComp.Log("modCore.dll: " + message.ToString());
+            CoreConsole.Log("modCore.dll: " + message.ToString());
         }
 
-        public void LogWarning(object message)
+        public static void LogWarning(object message)
         {
             Debug.Log("modCore.dll Warning: " + message.ToString());
-            monitorComp.Log("modCore.dll Warning: " + message.ToString());
+            CoreConsole.Log("modCore.dll Warning: " + message.ToString());
         }
 
-        public void LogError(object message)
+        public static void LogError(object message)
         {
             Debug.Log("modCore.dll error: " + message.ToString());
-            monitorComp.Log("modCore.dll error: " + message.ToString());
+            CoreConsole.Log("modCore.dll error: " + message.ToString());
         }
 
-        public void LogError(Exception e)
+        public static void LogError(Exception e)
         {
             Debug.Log("modCore.dll error: \nmessage: " + e.Message + ",\nSource: " + e.Source + ",\nStackTrace: " + e.StackTrace);
+            CoreConsole.Log("modCore.dll error: \nmessage: " + e.Message + ",\nSource: " + e.Source);
         }
 
-        public void Print_AsPlayer(object message)
+        public static void Print_AsPlayer(object message)
         {
             if (Application.loadedLevel == 2)
                 Console.Submit(message.ToString(), true);
             
         }
 
-        public void Print(object message)
+        public static void Print(object message)
         {
             if (Application.loadedLevel == 2)
             {
                 Console.AddMessage(message.ToString());
-                monitorComp.Log(message.ToString());
+                CoreConsole.Log(message.ToString());
             }
             else
             {
-                monitorComp.Log(message.ToString());
+                CoreConsole.Log(message.ToString());
             }
         }
 
-        public void PrintWarning(object message)
+        public static void PrintWarning(object message)
         {
             if (Application.loadedLevel == 2)
             {
                 Console.AddWarning("Warning: " + message.ToString());
-                monitorComp.Log("Warning: " + message.ToString());
+                CoreConsole.Log("Warning: " + message.ToString());
             }
             else
             {
-                monitorComp.Log("Warning: " + message.ToString());
+                CoreConsole.Log("Warning: " + message.ToString());
             }
         }
 
-        public void PrintError(object message)
+        public static void PrintError(object message)
         {
             if (Application.loadedLevel == 2)
             {
                 Console.AddError("Error: " + message.ToString());
-                monitorComp.Log("Error: " + message.ToString());
+                CoreConsole.Log("Error: " + message.ToString());
             }
             else
             {
-                monitorComp.Log("Error: " + message.ToString());
+                CoreConsole.Log("Error: " + message.ToString());
             }
+        }
+
+        public static void RegisterCommand(CoreConsole.CommandDescription desc) {
+            CoreConsole.RegisterCommand(desc);
+            if (plugin_Commands.ContainsKey(desc.plugin))
+                plugin_Commands[desc.plugin].Add(desc);
+            else
+                plugin_Commands[desc.plugin] = new List<CoreConsole.CommandDescription>();
         }
 
         public IPlugin GetPlugin(string name)
@@ -396,20 +502,97 @@ namespace modCore
                 return null;
         }
 
-        [Obsolete("Please use ModApi.GetMesh instead.", false)]
-        public Mesh GetMesh(string name)
-        {
-            return ModApi.GetMesh(name);
-        }
-
         private void AddModCoreCommands()
         {
-            List<CommandDescription> modCoreCommands = new List<CommandDescription>();
-            modCoreCommands.Add(new CommandDescription("exit", string.Empty, "exits the game"));
-            modCoreCommands.Add(new CommandDescription("help", "[-p]|[command] [pluginName]", "displays this prompt", "Displays the help prompt. Use the name of a plugin as the third argument if '-p' was used as the second to get a list of every command for that plugin or enter in a command name for the second argument to get a detailed description of the command. notice: you do not need to place a '/' in front of the command name for the second argument"));
-            modCoreCommands.Add(new CommandDescription("plugins", string.Empty, "lists installed plugins"));
-            modCoreCommands.Add(new CommandDescription("version", string.Empty, "Prints the current version of modCore."));
-            AddCommands("modCore", modCoreCommands);
+            RegisterCommand(new CoreConsole.CommandDescription("modCore", "alias", "<-action> [alias] [command]", "Add and remove aliases", "Used to add and removed aliases to the game. The second argument is the action. If the action is \"-add\", then the third argument is the alias and the forth is the command the alias is for. If the action is \"-remove\", the the third argument should be the alias you want removed. Use \"-h\" for the action to get a list of available actions.", AliasCmd));
+            RegisterCommand(new CoreConsole.CommandDescription("modCore", "exit", string.Empty, "exits the game", ExitCmd));
+            RegisterCommand(new CoreConsole.CommandDescription("modCore", "plugins", string.Empty, "lists installed plugins", PluginsCmd));
+            RegisterCommand(new CoreConsole.CommandDescription("modCore", "version", string.Empty, "Prints the current version of modCore.", VersionCmd));
+            RegisterCommand(new CoreConsole.CommandDescription("modCore", "reload", string.Empty, "Rescans and restarts plugins.", ReloadCmd));
+        }
+
+        object AliasCmd(params string[] args) {
+            if (args.Length > 1) {
+                switch (args[1].ToLower()) {
+                    case "-add":
+                        if (args.Length == 4) {
+                            Alias.AddAlias(args[2], args[3]);
+                            Alias.Save();
+                        }
+                        else
+                            PrintError("Invalid number of arguments. Got " + args.Length + ", expected 4.");
+                        break;
+
+                    case "-remove":
+                        if (args.Length == 3) {
+                            Alias.RemoveAlias(args[2]);
+                            Alias.Save();
+                        }
+                        else
+                            PrintError("Invalid number of arguments, Got " + args.Length + ", expected 3.");
+                        break;
+
+                    case "-list":
+                        Dictionary<string, string> aliases = Alias.Aliases;
+                        Print("");
+                        Print("Available aliases (<alias>, <command>): ");
+                        foreach (string alias in aliases.Keys) {
+                            Print("-- " + alias + ", " + aliases[alias]);
+                        }
+                        Print("");
+                        break;
+
+                    case "-reload":
+                        Alias.Load();
+                        break;
+
+                    case "-h":
+                        Print("");
+                        Print("Available actions: ");
+                        Print("-add <alias> <command> : adds an alias for command.");
+                        Print("-remove <alias> : Removes the alias.");
+                        Print("-list : lists all aliases.");
+                        Print("-reload : Loads the alias list from the file.");
+                        Print("-h : Shows this prompt.");
+                        Print("");
+                        break;
+
+                    default:
+                        PrintError("Unknown action \"" + args[1] + "\".");
+                        break;
+                }
+            }
+            else
+                PrintError("Invalid number of arguments.");
+            return "";
+        }
+
+        object ExitCmd(params string[] args) {
+            Application.Quit();
+            return "";
+        }
+
+        object PluginsCmd(params string[] args) {
+            Print("");
+            Print("Plugins: ");
+            if (plugins != null) {
+                foreach (IPlugin plugin in plugins) {
+                    Print("--" + plugin.Name);
+                }
+            }
+            return "";
+        }
+
+        object VersionCmd(params string[] args) {
+            Print(Version);
+            return "";
+        }
+
+        object ReloadCmd(params string[] args) {
+            StartPlugins();
+            Alias.Load();
+            Print("Plugins reloaded successfully.");
+            return "";
         }
         #endregion
 

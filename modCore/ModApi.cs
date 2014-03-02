@@ -77,18 +77,18 @@ namespace modCore
         /// </summary>
         public void SearchForModels()
         {
-            modelFolder = Environment.CurrentDirectory + "\\StarForge_Data\\Managed\\models\\";
+            modelFolder = ModCore.ModFolder + "\\models\\";
             if (!Directory.Exists(modelFolder))
             {
-                modCore.Log("Creating model folder.");
+                ModCore.Log("Creating model folder.");
                 Directory.CreateDirectory(modelFolder);
                 return;
             }
 
             importedMeshes.Clear();
-            modCore.Log("scanning for models...");
+            ModCore.Log("scanning for models...");
             string[] paths = Directory.GetFiles(modelFolder);
-            modCore.Log("Found " + paths.Length + " models.");
+            ModCore.Log("Found " + paths.Length + " models.");
             foreach (string modelPath in paths)
             {
                 Mesh mesh = ObjImporter.ImportFile(modelPath);
@@ -100,7 +100,7 @@ namespace modCore
                 {
                     string[] brokenString = modelPath.Split('\\');
                     string modelFileName = brokenString[brokenString.Length - 1];
-                    modCore.PrintError("Failed to load " + modelFileName);
+                    ModCore.PrintError("Failed to load " + modelFileName);
                 }
             }
         }

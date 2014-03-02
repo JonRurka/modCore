@@ -9,7 +9,7 @@ namespace modCore
 {
     // Converts and .Obj file into unity mesh data.
     // Code provided by unity wiki.
-    class ObjImporter
+    public class ObjImporter
     {
         public static ModCore modCore;
 
@@ -74,7 +74,7 @@ namespace modCore
             }
             catch (Exception e)
             {
-                modCore.PrintError(e);
+                ModCore.PrintError(e);
                 return null;
             }
         }

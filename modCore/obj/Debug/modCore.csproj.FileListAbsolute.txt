@@ -6,3 +6,13 @@ E:\Documents\Visual Studio 2010\Projects\modCore\modCore\obj\Debug\modCore.cspro
 E:\Documents\Visual Studio 2010\Projects\modCore\modCore\bin\Debug\UnityEngine.dll
 E:\Documents\Visual Studio 2010\Projects\modCore\modCore\bin\Debug\Assembly-CSharp.dll
 E:\Documents\Visual Studio 2010\Projects\modCore\modCore\bin\Debug\uLink.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\modCore.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\modCore.pdb
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\Assembly-CSharp.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\uLink.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\UnityEngine.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\obj\Debug\modCore.csprojResolveAssemblyReference.cache
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\obj\Debug\modCore.dll
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\obj\Debug\modCore.pdb
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\modCore.dll.CodeAnalysisLog.xml
+E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\bin\Debug\modCore.dll.lastcodeanalysissucceeded
