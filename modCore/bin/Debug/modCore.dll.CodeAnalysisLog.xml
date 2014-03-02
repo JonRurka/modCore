@@ -12,14 +12,14 @@
          <Members>
           <Member Name="#Load()" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 01:23:09Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
              <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="33">In method 'Alias.Load()', call System.IDisposable.Dispose on object 'reader' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Save()" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 01:23:09Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
              <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="60">In method 'Alias.Save()', object 'writer' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'writer' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
@@ -30,7 +30,7 @@
          <Members>
           <Member Name="#Dispose()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="False">
            <Messages>
-            <Message Id="resetEvent" TypeName="DisposableFieldsShouldBeDisposed" Category="Microsoft.Usage" CheckId="CA2213" Status="Active" Created="2014-03-02 01:23:09Z" FixCategory="NonBreaking">
+            <Message Id="resetEvent" TypeName="DisposableFieldsShouldBeDisposed" Category="Microsoft.Usage" CheckId="CA2213" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="NonBreaking">
              <Issue Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="AsyncRunner.cs" Line="74">'AsyncRunner' contains field 'AsyncRunner.resetEvent' that is of IDisposable type: 'ManualResetEvent'. Change the Dispose method on 'AsyncRunner' to call Dispose or Close on this field.</Issue>
             </Message>
            </Messages>
@@ -41,14 +41,14 @@
          <Members>
           <Member Name="#CreateMeshStruct(System.String)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 01:23:09Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
              <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="ObjImporter .cs" Line="91">In method 'ObjImporter.CreateMeshStruct(string)', object 'stream' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'stream' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#populatMeshStruct(modCore.ObjImporter+meshStruct&amp;)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 01:23:09Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
              <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="ObjImporter .cs" Line="148">In method 'ObjImporter.populatMeshStruct(ref ObjImporter.meshStruct)', object 'stream' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'stream' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
@@ -113,6 +113,14 @@
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
    <ExceptionMessage>The indirectly-referenced Silverlight assembly 'System.Core, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. Silverlight reference assemblies should be specified with the '/reference' switch. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced Silverlight assembly 'mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. Silverlight reference assemblies should be specified with the '/reference' switch. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced Silverlight assembly 'System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. Silverlight reference assemblies should be specified with the '/reference' switch. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
   </Exception>
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>

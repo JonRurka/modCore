@@ -8,6 +8,8 @@ namespace modCore
     {
         string Name { get; }
 
+        string Version { get; }
+
         void Init(ModCore core);
 
         bool Submit(string message);

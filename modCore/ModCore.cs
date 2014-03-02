@@ -42,7 +42,7 @@ namespace modCore
         /// </summary>
         public string Version
         {
-            get { return "ModCore version 1.2-beta"; }
+            get { return "ModCore version 2.0.0-beta"; }
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace modCore
             monitorComp.modApi = modApi;
             Log("started.");
             StartPlugins();
-            EventManager.Subscribe(typeof(PlayerCommandEvent), new EventSubscription.EventSubscriber(SubmitCommand));
-            EventManager.Subscribe(typeof(PlayerMessageEvent), new EventSubscription.EventSubscriber(SubmitMessage));
+            //EventManager.Subscribe(typeof(PlayerCommandEvent), new EventSubscription.EventSubscriber(SubmitCommand));
+            //EventManager.Subscribe(typeof(PlayerMessageEvent), new EventSubscription.EventSubscriber(SubmitMessage));
             AddModCoreCommands();
             Alias.Load();
         }
