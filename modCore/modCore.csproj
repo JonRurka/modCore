@@ -44,9 +44,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="uLink">
-      <HintPath>.\uLink.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>.\UnityEngine.dll</HintPath>
     </Reference>

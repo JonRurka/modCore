@@ -5,7 +5,6 @@ using System.Text;
 using CodeHatch.AI;
 using CodeHatch.Common;
 using UnityEngine;
-using uLink;
 
 namespace modCore
 {
