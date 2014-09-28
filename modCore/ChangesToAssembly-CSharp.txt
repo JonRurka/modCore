@@ -1,3 +1,2 @@
 *In User static constructor, add "ModCore.Init()"
 *Make m_userInput feild in Console public.
-*Make all methods in SimpleModificationHandler public (method3 not required).

@@ -7,7 +7,6 @@ using CodeHatch;
 using CodeHatch.AI;
 using CodeHatch.Common;
 using CodeHatch.Networking.Events;
-using CodeHatch.Networking.Events.Player;
 using UnityEngine;
 
 namespace modCore
@@ -42,7 +41,7 @@ namespace modCore
         /// </summary>
         public string Version
         {
-            get { return "ModCore version 2.0.0-beta"; }
+            get { return "ModCore version 3.0.0-beta"; }
         }
 
         /// <summary>
@@ -77,8 +76,6 @@ namespace modCore
             monitorComp.modApi = modApi;
             Log("started.");
             StartPlugins();
-            //EventManager.Subscribe(typeof(PlayerCommandEvent), new EventSubscription.EventSubscriber(SubmitCommand));
-            //EventManager.Subscribe(typeof(PlayerMessageEvent), new EventSubscription.EventSubscriber(SubmitMessage));
             AddModCoreCommands();
             Alias.Load();
         }
@@ -181,241 +178,6 @@ namespace modCore
             }
         }
 
-        public void SubmitCommand(IEvent baseEvent)
-        {
-            PlayerCommandEvent theEvent = (PlayerCommandEvent)baseEvent;
-            string message = theEvent.Command;
-
-            if (message.StartsWith("/"))
-            {
-                CoreConsole.Execute(message.Remove(0, 1));
-                #region old
-                //string[] args = message.Split(' ');
-                /*string inputCommand = string.Empty;
-                string commandFromAliase = Alias.GetCommand(args[0].Replace("/", ""));
-
-                if (!commandFromAliase.Equals(string.Empty))
-                    inputCommand = "/" + commandFromAliase;
-                else
-                    inputCommand = args[0];
-
-                switch (inputCommand.ToLower())
-                {
-                    case "/cheat":
-                    case "/say":
-                    case "/me":
-                    case "/suicide":
-                        break;
-
-                    case "/alias":
-                        #region alias
-                        if (args.Length > 1)
-                        {
-                            switch (args[1].ToLower())
-                            {
-                                case "-add":
-                                    if (args.Length == 4)
-                                    {
-                                        Alias.AddAlias(args[2], args[3]);
-                                        Alias.Save();
-                                    }
-                                    else
-                                        PrintError("Invalid number of arguments. Got " + args.Length + ", expected 4.");
-                                    break;
-
-                                case "-remove":
-                                    if (args.Length == 3)
-                                    {
-                                        Alias.RemoveAlias(args[2]);
-                                        Alias.Save();
-                                    }
-                                    else
-                                        PrintError("Invalid number of arguments, Got " + args.Length + ", expected 3.");
-                                    break;
-
-                                case "-list":
-                                    Dictionary<string, string> aliases = Alias.Aliases;
-                                    Print("");
-                                    Print("Available aliases (<alias>, <command>): ");
-                                    foreach (string alias in aliases.Keys)
-                                    {
-                                        Print("-- " + alias + ", " + aliases[alias]);
-                                    }
-                                    Print("");
-                                    break;
-
-                                case "-reload":
-                                    Alias.Load();
-                                    break;
-
-                                case "-h":
-                                    Print("");
-                                    Print("Available actions: ");
-                                    Print("-add <alias> <command> : adds an alias for command.");
-                                    Print("-remove <alias> : Removes the alias.");
-                                    Print("-list : lists all aliases.");
-                                    Print("-reload : Loads the alias list from the file.");
-                                    Print("-h : Shows this prompt.");
-                                    Print("");
-                                    break;
-
-                                default:
-                                    PrintError("Unknown action \"" + args[1] + "\".");
-                                    break;
-                            }
-                        }
-                        else
-                            PrintError("Invalid number of arguments.");
-                        break;
-                        #endregion
-
-                    case "/exit":
-                        Application.Quit();
-                        break;
-                        
-                    case "/help":
-                        #region help
-                        string tabString = string.Empty;
-                        string gray = string.Empty;
-                        string Red = string.Empty;
-                        if (Application.loadedLevel == 2)
-                        {
-                            tabString = "[00ff00]--[ffffff]";
-                            gray = "[ffffff]";
-                            Red = "[ff0000]";
-                        }
-
-                        if (args.Length == 1)
-                        {
-                            Print("");
-                            Print("Available commands (<> = required, [] = optional): ");
-                            foreach (CommandDescription cmd in allCommands.Values)
-                            {
-                                Print(tabString + "/" + cmd.command + " " + cmd.command_args + " - " + cmd.description_small + "." + gray);
-                            }
-                            Print("");
-                        }
-                        else if (args.Length == 3 && args[1].ToLower().StartsWith("-p"))
-                        {
-                            if (plugin_Commands.ContainsKey(args[2].ToLower()))
-                            {
-                                Print("");
-                                Print("Available commands (<> = required, [] = optional): ");
-                                CommandDescription[] pluginCmds = plugin_Commands[args[2].ToLower()];
-                                foreach (CommandDescription cmd in pluginCmds)
-                                {
-                                    Print(tabString + "/" + cmd.command + " " + cmd.command_args + ": " + cmd.description_small + "." + gray);
-                                }
-                                Print("");
-                            }
-                            else
-                            {
-                                PrintError("Plugin not found.");
-                            }
-                        }
-                        else if (args.Length == 2 && !args[1].ToLower().StartsWith("-p"))
-                        {
-                            if (allCommands.ContainsKey(args[1]))
-                            {
-                                Print("");
-                                Print("Command description (<> = required, [] = optional): ");
-                                Print(Red + "Command: " + gray + "/" + allCommands[args[1]].command + " " + allCommands[args[1]].command_args + gray);
-                                if (allCommands[args[1]].Equals(string.Empty))
-                                {
-                                    Print(Red + "Description: " + gray + allCommands[args[1]].description_small + "." + gray);
-                                }
-                                else
-                                {
-                                    Print(Red + "Short description: " + gray + allCommands[args[1]].description_small + "." + gray);
-                                    Print(Red + "Long description: " + gray + allCommands[args[1]].description_Long + "." + gray);
-                                }
-                                Print("");
-                            }
-                            else
-                                PrintError("Command not found.");
-                        }
-                        else if (args.Length == 2 && args[1].ToLower().StartsWith("-p"))
-                        {
-                            PrintError("Please specify a plugin.");
-                        }
-                        else if (args.Length > 3)
-                        {
-                            PrintError("To many arguments.");
-                        }
-                        else
-                            PrintError("Unknown error.");
-
-                        break;
-                        #endregion
-
-                    case "/plugins":
-                        #region plugins
-                        Print("");
-                        Print("Plugins: ");
-                        if (plugins != null)
-                        {
-                            foreach (IPlugin plugin in plugins)
-                            {
-                                Print("--" + plugin.Name);
-                            }
-                        }
-                        break;
-                        #endregion
-
-                    case "/version":
-                        Print(Version);
-                        break;
-
-                    case "/reload":
-                        #region reload
-                        StartPlugins();
-                        Alias.Load();
-                        Print("Plugins reloaded successfully.");
-                        break;
-                        #endregion
-
-                    default:
-                        // send to other mods for processing.
-                        #region default
-                        bool received = false;
-                        if (allCommands.ContainsKey(args[0].Replace("/","")))
-                        {
-                            if (plugins != null)
-                            {
-                                foreach (IPlugin plugin in plugins)
-                                {
-                                    if (plugin != null)
-                                    {
-                                        plugin.Submit(message);
-                                    }
-                                }
-                            }
-                            else
-                                PrintError("plugins list is null.");
-                        }
-                        else
-                            PrintError("Command \"" + args[0] + "\" doesn't exist.");
-                        break;
-                        #endregion
-                }*/
-                #endregion
-            }
-            else if (plugins != null)
-            {
-
-            }
-        }
-
-        public void SubmitMessage(IEvent baseEvent) {
-            PlayerMessageEvent theEvent = (PlayerMessageEvent)baseEvent;
-            string message = theEvent.Message;
-
-            foreach (IPlugin plugin in plugins) {
-                if (plugin != null)
-                    plugin.Submit(message);
-            }
-        }
-
         public static void Log(object message)
         {
             Debug.Log("modCore.dll: " + message.ToString());
@@ -490,8 +252,10 @@ namespace modCore
             CoreConsole.RegisterCommand(desc);
             if (plugin_Commands.ContainsKey(desc.plugin))
                 plugin_Commands[desc.plugin].Add(desc);
-            else
+            else {
                 plugin_Commands[desc.plugin] = new List<CoreConsole.CommandDescription>();
+                plugin_Commands[desc.plugin].Add(desc);
+            }
         }
 
         public IPlugin GetPlugin(string name)

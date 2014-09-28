@@ -12,26 +12,15 @@
          <Members>
           <Member Name="#Load()" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
-             <Issue Name="NonExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="33">In method 'Alias.Load()', call System.IDisposable.Dispose on object 'reader' before all references to it are out of scope.</Issue>
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-09-28 03:25:23Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="33">In method 'Alias.Load()', object 'reader' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'reader' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Save()" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
-             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="60">In method 'Alias.Save()', object 'writer' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'writer' before all references to it are out of scope.</Issue>
-            </Message>
-           </Messages>
-          </Member>
-         </Members>
-        </Type>
-        <Type Name="AsyncRunner" Kind="Class" Accessibility="Assembly" ExternallyVisible="False">
-         <Members>
-          <Member Name="#Dispose()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="False">
-           <Messages>
-            <Message Id="resetEvent" TypeName="DisposableFieldsShouldBeDisposed" Category="Microsoft.Usage" CheckId="CA2213" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="NonBreaking">
-             <Issue Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="AsyncRunner.cs" Line="74">'AsyncRunner' contains field 'AsyncRunner.resetEvent' that is of IDisposable type: 'ManualResetEvent'. Change the Dispose method on 'AsyncRunner' to call Dispose or Close on this field.</Issue>
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-09-28 03:25:23Z" FixCategory="DependsOnFix">
+             <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="Alias.cs" Line="61">In method 'Alias.Save()', object 'writer' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'writer' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
           </Member>
@@ -41,14 +30,14 @@
          <Members>
           <Member Name="#CreateMeshStruct(System.String)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-09-28 03:25:23Z" FixCategory="DependsOnFix">
              <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="ObjImporter .cs" Line="91">In method 'ObjImporter.CreateMeshStruct(string)', object 'stream' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'stream' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#populatMeshStruct(modCore.ObjImporter+meshStruct&amp;)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-03-02 02:57:42Z" FixCategory="DependsOnFix">
+            <Message TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000" Status="Active" Created="2014-09-28 03:25:23Z" FixCategory="DependsOnFix">
              <Issue Name="ExceptionEdge" Certainty="75" Level="Warning" Path="E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore" File="ObjImporter .cs" Line="148">In method 'ObjImporter.populatMeshStruct(ref ObjImporter.meshStruct)', object 'stream' is not disposed along all exception paths. Call System.IDisposable.Dispose on object 'stream' before all references to it are out of scope.</Issue>
             </Message>
            </Messages>
@@ -63,21 +52,10 @@
   </Target>
  </Targets>
  <Rules>
-  <Rule TypeName="DisposableFieldsShouldBeDisposed" Category="Microsoft.Usage" CheckId="CA2213">
-   <Name>Disposable fields should be disposed</Name>
-   <Description>If a type that implements IDisposable owns fields that also implement IDisposable, the encapsulating type's Dispose() implementation should call Dispose() on each disposable field.</Description>
-   <Resolution Name="Default">{0} contains field {1} that is of IDisposable type: {2}. Change the Dispose method on {0} to call Dispose or Close on this field.</Resolution>
-   <Owner />
-   <Url>http://msdn.microsoft.com/library/ms182328(VS.100).aspx</Url>
-   <Email>[none]</Email>
-   <MessageLevel Certainty="75">Warning</MessageLevel>
-   <File Name="usagerules.dll" Version="10.0.0.0" />
-  </Rule>
   <Rule TypeName="Dispose objects before losing scope" Category="Microsoft.Reliability" CheckId="CA2000">
    <Name>Dispose objects before losing scope</Name>
    <Description>If a disposable object is not explicitly disposed before all references to it are out of scope, the object will be disposed at some indeterminate time when the garbage collector runs the finalizer of the object. Because an exceptional event might occur that will prevent the finalizer of the object from running, the object should be explicitly disposed instead.</Description>
    <Resolution Name="ExceptionEdge">In method {0}, object {1} is not disposed along all exception paths. Call System.IDisposable.Dispose on object {1} before all references to it are out of scope.</Resolution>
-   <Resolution Name="NonExceptionEdge">In method {0}, call System.IDisposable.Dispose on object {1} before all references to it are out of scope.</Resolution>
    <Owner>RuleOwner</Owner>
    <Url>http://msdn.microsoft.com/library/ms182289(VS.100).aspx</Url>
    <Email />
@@ -124,11 +102,15 @@
   </Exception>
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'Newtonsoft.Json, Version=4.5.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
    <ExceptionMessage>The indirectly-referenced assembly 'SteamworksManaged, Version=1.0.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
   </Exception>
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
-   <ExceptionMessage>The indirectly-referenced assembly 'DecalSystem.Runtime, Version=1.3.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+   <ExceptionMessage>The indirectly-referenced assembly 'UMA, Version=0.0.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
   </Exception>
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
@@ -140,7 +122,27 @@
   </Exception>
   <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
    <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'NSpeex, Version=1.1.3.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'PowerToolsBoneBaking, Version=1.0.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'KGFUtils.Settings, Version=1.0.4512.18287, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
    <ExceptionMessage>The indirectly-referenced assembly 'ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
+  </Exception>
+  <Exception Keyword="CA0060" Kind="Engine" TreatAsWarning="True">
+   <Type>Microsoft.FxCop.Sdk.FxCopException</Type>
+   <ExceptionMessage>The indirectly-referenced assembly 'LitJson, Version=0.0.0.0, Culture=neutral' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete. This assembly was referenced by: E:\Documents\Visual Studio 2010\Projects\StarforgePlugins\modCore\modCore\Assembly-CSharp.dll.</ExceptionMessage>
   </Exception>
  </Exceptions>
 </FxCopReport>

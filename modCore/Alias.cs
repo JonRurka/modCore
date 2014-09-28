@@ -45,6 +45,7 @@ namespace modCore
                     }
                 }
             }
+            reader.Close();
         }
 
         public static void Save()

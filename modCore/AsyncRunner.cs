@@ -73,6 +73,7 @@ namespace modCore
 
         public void Dispose() {
             ConsoleWpr.LogDebug("Dispose called in thread " + threadName);
+            resetEvent.Close();
             run = false;
             thread.Abort();
             for (int i = 0; i < actions.Count; i++) {
